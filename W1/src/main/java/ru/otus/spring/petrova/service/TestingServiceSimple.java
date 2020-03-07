@@ -6,9 +6,9 @@ import ru.otus.spring.petrova.domain.Question;
 import java.util.List;
 
 public class TestingServiceSimple implements TestingService {
-  private QuestionService questionService;
-  private QuestionDao questionDao;
-  private AnswerService answerService;
+  private final QuestionService questionService;
+  private final QuestionDao questionDao;
+  private final AnswerService answerService;
 
   public TestingServiceSimple(QuestionService questionService, QuestionDao questionDao, AnswerService answerService) {
     this.questionService = questionService;
