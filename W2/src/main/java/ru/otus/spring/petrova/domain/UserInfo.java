@@ -1,30 +1,27 @@
 package ru.otus.spring.petrova.domain;
 
+import java.util.Locale;
+
 public class UserInfo {
-  private String firstName;
-  private String lastName;
+  private final String firstName;
+  private final String lastName;
+  private final Locale locale;
 
-  public UserInfo() {
-  }
-
-  public UserInfo(String firstName, String lastName) {
+  public UserInfo(String firstName, String lastName, Locale locale) {
     this.firstName = firstName;
     this.lastName = lastName;
+    this.locale = locale;
   }
 
   public String getFirstName() {
     return firstName;
   }
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
   public String getLastName() {
     return lastName;
   }
 
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
+  public Locale getLocale() {
+    return locale;
   }
 }

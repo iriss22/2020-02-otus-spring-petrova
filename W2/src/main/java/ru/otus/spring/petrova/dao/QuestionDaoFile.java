@@ -1,6 +1,7 @@
 package ru.otus.spring.petrova.dao;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 import ru.otus.spring.petrova.domain.LoadQuestionError;
 import ru.otus.spring.petrova.domain.Question;
 
@@ -9,10 +10,12 @@ import java.io.FileReader;
 import java.net.URL;
 import java.util.List;
 
+import java.util.Locale;
 import java.util.stream.Collectors;
 
+@Repository
 public class QuestionDaoFile implements QuestionDao {
-  @Value("${questionsFile}")
+  @Value("${questions.file.name}")
   private String pathToFile;
 
   public String getQuestionsFile() {
@@ -24,8 +27,8 @@ public class QuestionDaoFile implements QuestionDao {
   }
 
   @Override
-  public List<Question> getQuestions() {
-    URL url = getClass().getClassLoader().getResource(pathToFile);
+  public List<Question> getQuestions(Locale locale) {
+    URL url = getClass().getClassLoader().getResource(String.format(pathToFile, locale.toString().toLowerCase()));
 
     try (BufferedReader bufferedReader = new BufferedReader(new FileReader(url.getFile()))) {
       List<Question> questions = bufferedReader

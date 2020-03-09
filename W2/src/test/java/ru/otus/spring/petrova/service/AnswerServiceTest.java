@@ -1,7 +1,8 @@
 package ru.otus.spring.petrova.service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.otus.spring.petrova.Main;
 import ru.otus.spring.petrova.domain.Question;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class AnswerServiceTest {
   private AnswerService answerService;
 
   public AnswerServiceTest() {
-    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/spring-context.xml");
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
     answerService = context.getBean(AnswerService.class);
   }
 
