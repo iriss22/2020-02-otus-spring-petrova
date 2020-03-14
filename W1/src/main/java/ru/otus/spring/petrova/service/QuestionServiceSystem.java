@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class QuestionServiceSystem implements QuestionService {
-  private Scanner sc;
+  private final Scanner sc;
 
   public QuestionServiceSystem() {
     sc = new Scanner(System.in);
