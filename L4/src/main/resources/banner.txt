@@ -1,0 +1,8 @@
+${Ansi.YELLOW}     ,---.     ,--.               ,--.                    ,--.     ,--------.                   ,--.
+${Ansi.YELLOW}    '   .-'  ,-'  '-. ,--.,--.  ,-|  |  ,---.  ,--,--,  ,-'  '-.   '--.  .--'  ,---.   ,---.  ,-'  '-.
+${Ansi.RED}    `.  `-.  '-.  .-' |  ||  | ' .-. | | .-. : |      \ '-.  .-'      |  |    | .-. : (  .-'  '-.  .-'
+${Ansi.RED}    .-'    |   |  |   '  ''  ' \ `-' | \   --. |  ||  |   |  |        |  |    \   --. .-'  `)   |  |
+${Ansi.YELLOW}    `-----'    `--'    `----'   `---'   `----' `--''--'   `--'        `--'     `----' `----'    `--'
+
+${Ansi.BLUE} :: Spring Boot${spring-boot.formatted-version} :: ${Ansi.DEFAULT}
+${Ansi.BLUE} ${application.title} ${application.version}

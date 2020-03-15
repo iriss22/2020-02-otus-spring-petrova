@@ -1,7 +1,7 @@
 package ru.otus.spring.petrova.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.spring.petrova.config.YamlProps;
 import ru.otus.spring.petrova.domain.InputOutputCode;
 import ru.otus.spring.petrova.domain.Question;
 import ru.otus.spring.petrova.domain.UserInfo;
@@ -19,14 +19,13 @@ public class QuestionServiceSystem implements QuestionService {
   private Locale locale;
 
   private TranslationService translationService;
+  private final int answersCountToPass;
 
-  @Value("${answers.right.count}")
-  private int answersCountToPass;
-
-  public QuestionServiceSystem(TranslationService translationService) {
+  public QuestionServiceSystem(TranslationService translationService, YamlProps props) {
     sc = new Scanner(System.in);
     this.translationService = translationService;
     locale = Locale.getDefault();
+    answersCountToPass = props.getRightAnswersCount();
   }
 
   @Override

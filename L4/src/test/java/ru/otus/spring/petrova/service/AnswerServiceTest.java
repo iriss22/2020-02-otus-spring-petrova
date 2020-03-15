@@ -1,8 +1,8 @@
 package ru.otus.spring.petrova.service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.otus.spring.petrova.Main;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.petrova.domain.Question;
 
 import java.util.ArrayList;
@@ -11,13 +11,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest
 public class AnswerServiceTest {
+  @Autowired
   private AnswerService answerService;
-
-  public AnswerServiceTest() {
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
-    answerService = context.getBean(AnswerService.class);
-  }
 
   @Test
   public void checkAnswerTest() {

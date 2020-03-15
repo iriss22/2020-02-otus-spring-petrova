@@ -2,6 +2,7 @@ package ru.otus.spring.petrova.dao;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import ru.otus.spring.petrova.config.YamlProps;
 import ru.otus.spring.petrova.domain.LoadQuestionError;
 import ru.otus.spring.petrova.domain.Question;
 
@@ -15,15 +16,10 @@ import java.util.stream.Collectors;
 
 @Repository
 public class QuestionDaoFile implements QuestionDao {
-  @Value("${questions.file.name}")
-  private String pathToFile;
+  private final String pathToFile;
 
-  public String getQuestionsFile() {
-    return pathToFile;
-  }
-
-  public void setQuestionsFile(String pathToFile) {
-    this.pathToFile = pathToFile;
+  public QuestionDaoFile(YamlProps yamlProps) {
+    pathToFile = yamlProps.getQuestionFileName();
   }
 
   @Override
