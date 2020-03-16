@@ -1,0 +1,3 @@
+application:
+  questionFileName: questions_%s.csv
+  rightAnswersCount: 3
