@@ -10,12 +10,22 @@ import java.util.Locale;
 public class TranslationService {
 
   private MessageSource messageSource;
+  private Locale locale;
 
   public TranslationService(MessageSource messageSource) {
     this.messageSource = messageSource;
+    this.locale = Locale.getDefault();
   }
 
-  public String getTranslation(InputOutputCode key, Locale locale, String... args) {
+  public void changeLocale(Locale locale) {
+    this.locale = locale;
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public String getTranslation(InputOutputCode key, String... args) {
     return messageSource.getMessage(key.getCode(), args, locale);
   }
 }
