@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS book;
+DROP TABLE IF EXISTS author;
+DROP TABLE IF EXISTS genre;
+
+CREATE TABLE author (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE genre (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE book (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    author_id BIGINT NOT NULL REFERENCES author(id),
+    genre_id BIGINT NOT NULL REFERENCES genre(id)
+);
