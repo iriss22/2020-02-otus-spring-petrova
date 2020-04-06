@@ -1,42 +1,48 @@
 package ru.otus.spring.petrova.dao;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.EmptyResultDataAccessException;
-import ru.otus.spring.petrova.dao.author.AuthorDaoJdbc;
+import ru.otus.spring.petrova.dao.author.AuthorDao;
+import ru.otus.spring.petrova.dao.author.AuthorDaoImpl;
 import ru.otus.spring.petrova.domain.Author;
+import ru.otus.spring.petrova.exception.AlreadyExist;
 
-@DisplayName("Репозиторий на основе Jdbc для работы с авторами ")
-@JdbcTest
-@Import({AuthorDaoJdbc.class})
+import java.util.Optional;
+
+@DisplayName("Репозиторий для работы с авторами ")
+@DataJpaTest
+@Import({AuthorDaoImpl.class})
 public class AuthorDaoTest {
-  private final int AUTHOR_ID = 1;
+  private final long AUTHOR_ID = 1;
 
   @Autowired
-  private AuthorDaoJdbc authorDaoJdbc;
+  private AuthorDao authorDaoImpl;
+  @Autowired
+  private TestEntityManager em;
 
   @DisplayName("должен получать автора по идентефикатору")
   @Test
-  public void testGetAddress() {
-    Author author = authorDaoJdbc.get(AUTHOR_ID);
+  public void testGetAuthor() {
+    Author author = authorDaoImpl.get(AUTHOR_ID).get();
     Assert.assertEquals(new Author(AUTHOR_ID, "Фримен"), author);
   }
 
   @DisplayName("должен сохранять автора ")
   @Test
-  public void testSaveAddress() {
-    long createdAuthorId = authorDaoJdbc.create(new Author( "TestBook"));
-    Assert.assertEquals(new Author(createdAuthorId, "TestBook"), authorDaoJdbc.get(createdAuthorId));
+  public void testSaveAuthor() throws AlreadyExist {
+    Author createdAuthor = authorDaoImpl.create(new Author( "TestBook"));
+    Assert.assertEquals(em.find(Author.class, 2L), createdAuthor);
   }
 
   @DisplayName("должен выдавать правильную ошибку на не существующего автора")
   @Test
   public void testGetNotExistedAuthor() {
-    Assertions.assertThrows(EmptyResultDataAccessException.class, () -> authorDaoJdbc.get(999));
+    Optional<Author> author = authorDaoImpl.get(999);
+    Assert.assertTrue(author.isEmpty());
   }
 }

@@ -2,8 +2,10 @@ package ru.otus.spring.petrova.dao.author;
 
 import ru.otus.spring.petrova.domain.Author;
 
+import java.util.Optional;
+
 public interface AuthorDao {
 
-  long create(Author author);
-  Author get(long authorId);
+  Author create(Author author);
+  Optional<Author> get(long authorId);
 }

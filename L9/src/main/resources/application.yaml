@@ -5,3 +5,14 @@ spring:
     username: "postgres"
     password: "mysecretpassword"
     initialization-mode: always
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+#    show-sql: true
+
+logging:
+  level:
+    ROOT: OFF

@@ -6,26 +6,32 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.otus.spring.petrova.DataNotFound;
-import ru.otus.spring.petrova.dao.book.BookDaoJdbc;
+import ru.otus.spring.petrova.exception.DataNotFound;
+import ru.otus.spring.petrova.dao.book.BookDaoImpl;
 import ru.otus.spring.petrova.domain.Author;
 import ru.otus.spring.petrova.domain.Book;
 import ru.otus.spring.petrova.domain.Genre;
 
-@DisplayName("Репозиторий на основе Jdbc для работы с книгами ")
-@JdbcTest
-@Import({BookDaoJdbc.class})
+import java.util.Collections;
+import java.util.Optional;
+
+@DisplayName("Репозиторий для работы с книгами ")
+@DataJpaTest
+@Import({BookDaoImpl.class})
 public class BookDaoTest {
-  private static final int BOOK_ID = 1;
-  private static final int AUTHOR_ID = 1;
-  private static final int GENRE_ID = 1;
+  private static final long BOOK_ID = 1L;
+  private static final long AUTHOR_ID = 1L;
+  private static final long GENRE_ID = 1L;
   private static Author firstAuthor;
   private static Genre firstGenre;
 
   @Autowired
-  private BookDaoJdbc bookDaoJdbc;
+  private BookDaoImpl bookDaoImpl;
+  @Autowired
+  private TestEntityManager em;
 
   @BeforeAll
   public static void init() {
@@ -35,51 +41,55 @@ public class BookDaoTest {
 
   @DisplayName("должен получать книгу по идентефикатору")
   @Test
-  public void testGetBook() throws DataNotFound {
-    Book book = bookDaoJdbc.get(BOOK_ID);
-    Assert.assertEquals(new Book(BOOK_ID, "Паттерны проектирования", firstAuthor, firstGenre), book);
+  public void testGetBook() {
+    Book book = bookDaoImpl.get(BOOK_ID).get();
+    Assert.assertEquals(new Book(BOOK_ID, "Паттерны проектирования", firstAuthor, firstGenre, null), book);
   }
 
   @DisplayName("должен сохранять книгу ")
   @Test
-  public void testSaveBook() throws DataNotFound {
-    long createdBookId = bookDaoJdbc.create("TestBook", AUTHOR_ID, GENRE_ID);
-    Assert.assertEquals(new Book(createdBookId, "TestBook", firstAuthor, firstGenre), bookDaoJdbc.get(createdBookId));
+  public void testSaveBook() {
+    Book createdBook = bookDaoImpl.create(new Book("TestBook", firstAuthor, firstGenre));
+    Assert.assertNotNull(em.find(Book.class, createdBook.getId()));
   }
 
   @DisplayName("должен выдавать правильную ошибку при попытке получить не существующую книгу")
   @Test
   public void testGetNotExistedBook() {
-    Assertions.assertThrows(DataNotFound.class, () -> bookDaoJdbc.get(999));
+    Optional<Book> book = bookDaoImpl.get(999);
+    Assert.assertTrue(book.isEmpty());
   }
 
   @DisplayName("должен выдавать правильную ошибку при попытке удалить не существующую книгу")
   @Test
   public void testDeleteNotExistedBook() {
-    Assertions.assertThrows(DataNotFound.class, () -> bookDaoJdbc.delete(999));
+    Assertions.assertThrows(DataNotFound.class, () -> bookDaoImpl.delete(999));
   }
 
   @DisplayName("должен удалять книгу")
   @Test
   public void testDeleteBook() throws DataNotFound {
-    long deletedBookId = bookDaoJdbc.create("TestBook", AUTHOR_ID, GENRE_ID);
-    bookDaoJdbc.delete(deletedBookId);
-    Assertions.assertThrows(DataNotFound.class, () -> bookDaoJdbc.get(deletedBookId));
+    Book createdBook = bookDaoImpl.create(new Book("TestBook", firstAuthor, firstGenre));
+    long createdBookId = createdBook.getId();
+    bookDaoImpl.delete(createdBookId);
+    em.detach(createdBook);
+    Assert.assertNull(em.find(Book.class, createdBookId));
   }
 
   @DisplayName("должен выдавать правильную ошибку при попытке обновить не существующую книгу")
   @Test
   public void testUpdateNotExistedBook() {
-    Assertions.assertThrows(DataNotFound.class, () -> bookDaoJdbc.update(999, "newName"));
+    Assertions.assertThrows(DataNotFound.class, () -> bookDaoImpl.update(999, "newName"));
   }
 
   @DisplayName("должен обновлять книгу")
   @Test
   public void testUpdateBook() throws DataNotFound {
-    final long bookId = 3;
-    bookDaoJdbc.create("TestBook", AUTHOR_ID, GENRE_ID);
+    Book createdBook = bookDaoImpl.create(new Book("TestBook", firstAuthor, firstGenre));
+    long createdBookId = createdBook.getId();
     String newBookName = "NewName";
-    bookDaoJdbc.update(bookId, newBookName);
-    Assertions.assertEquals(new Book(bookId, newBookName, firstAuthor, firstGenre), bookDaoJdbc.get(bookId));
+    bookDaoImpl.update(createdBookId, newBookName);
+    em.detach(createdBook);
+    Assertions.assertEquals(new Book(createdBookId, newBookName, firstAuthor, firstGenre, Collections.emptyList()), em.find(Book.class, createdBookId));
   }
 }
