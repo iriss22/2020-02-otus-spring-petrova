@@ -2,15 +2,16 @@ package ru.otus.spring.petrova.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.petrova.repository.AuthorRepository;
 import ru.otus.spring.petrova.exception.AlreadyExist;
 import ru.otus.spring.petrova.exception.AuthorNotFound;
 import ru.otus.spring.petrova.exception.BookNotFound;
 import ru.otus.spring.petrova.exception.DataNotFound;
-import ru.otus.spring.petrova.dao.author.AuthorDao;
-import ru.otus.spring.petrova.dao.book.BookDao;
-import ru.otus.spring.petrova.dao.genre.GenreDao;
+import ru.otus.spring.petrova.repository.BookRepository;
+import ru.otus.spring.petrova.repository.GenreRepository;
 import ru.otus.spring.petrova.domain.Author;
 import ru.otus.spring.petrova.domain.Book;
 import ru.otus.spring.petrova.domain.Genre;
@@ -20,16 +21,26 @@ import ru.otus.spring.petrova.exception.GenreNotFound;
 @RequiredArgsConstructor
 public class BookService {
 
-  private final AuthorDao authorDao;
-  private final GenreDao genreDao;
-  private final BookDao bookDao;
+  private final AuthorRepository authorRepository;
+  private final GenreRepository genreRepository;
+  private final BookRepository bookRepository;
 
   public void addBook(String bookName, long authorId, long genreId) throws DataNotFound, AlreadyExist {
-    Author author = authorDao.get(authorId).orElseThrow(() -> new AuthorNotFound(authorId));
-    Genre genre = genreDao.get(genreId).orElseThrow(() -> new GenreNotFound(genreId));
+    Author author = authorRepository.findById(authorId).orElseThrow(() -> new AuthorNotFound(authorId));
+    Genre genre = genreRepository.findById(genreId).orElseThrow(() -> new GenreNotFound(genreId));
 
+    saveOrUpdate(new Book(bookName, author, genre));
+  }
+
+  public void updateBook(long bookId, String bookName) throws DataNotFound, AlreadyExist {
+    Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFound(bookId));
+    book.setName(bookName);
+    saveOrUpdate(book);
+  }
+
+  private void saveOrUpdate(Book book) throws AlreadyExist {
     try {
-      bookDao.create(new Book(bookName, author, genre));
+      bookRepository.save(book);
     } catch (RuntimeException e) {
       if (e.getCause() instanceof ConstraintViolationException) {
         throw new AlreadyExist("book", e);
@@ -39,24 +50,20 @@ public class BookService {
   }
 
   @Transactional
-  public void updateBook(long bookId, String bookName) throws DataNotFound {
-    bookDao.update(bookId, bookName);
-  }
-
-  @Transactional
   public void deleteBook(long id) throws DataNotFound {
-    bookDao.delete(id);
+    bookRepository.findById(id).orElseThrow(() -> new BookNotFound(id));
+    bookRepository.deleteById(id);
   }
 
   @Transactional(readOnly = true)
   public Book getBook(long id) throws DataNotFound {
-    Book book = bookDao.get(id).orElseThrow(() -> new BookNotFound(id));
+    Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFound(id));
     return book;
   }
 
   @Transactional(readOnly = true)
   public String getBookInfo(long id) throws DataNotFound {
-    Book book = bookDao.get(id).orElseThrow(() -> new BookNotFound(id));
+    Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFound(id));
     return book.toString();
   }
 }

@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.otus.spring.petrova.dao.author.AuthorDaoImpl;
-import ru.otus.spring.petrova.dao.book.BookDaoImpl;
-import ru.otus.spring.petrova.dao.comment.CommentDaoImpl;
-import ru.otus.spring.petrova.dao.genre.GenreDaoImpl;
+import ru.otus.spring.petrova.domain.Comment;
 import ru.otus.spring.petrova.exception.DataNotFound;
 
 import java.util.List;
@@ -19,11 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @DisplayName("Сервис для работы с комментариями к книгам ")
-@Import({BookService.class, CommentService.class, BookDaoImpl.class, AuthorDaoImpl.class, GenreDaoImpl.class, CommentDaoImpl.class})
+@Import({BookService.class, CommentService.class})
 public class CommentServiceTest {
 
   @Autowired
   private CommentService commentService;
+
   @Autowired
   private TestEntityManager em;
 
@@ -31,10 +29,14 @@ public class CommentServiceTest {
 
   @Test
   @DisplayName("может сохранить один и тот же комментарий дважды ")
-  public void saveGenreTwice() throws DataNotFound {
-    String commentName = "test";
-    commentService.createComment(BOOK_ID, commentName);
-    commentService.createComment(BOOK_ID, commentName);
+  public void saveCommentTwice() throws DataNotFound, InterruptedException {
+    String comment = "It was great!";
+    commentService.createComment(BOOK_ID, comment);
+    Comment savedComment = em.find(Comment.class, 2L);
+    assertThat(savedComment)
+        .isNotNull()
+        .hasFieldOrPropertyWithValue("text", comment);
+    commentService.createComment(BOOK_ID, comment);
   }
 
   @Test

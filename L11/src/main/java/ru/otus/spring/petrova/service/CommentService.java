@@ -3,7 +3,7 @@ package ru.otus.spring.petrova.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.petrova.dao.comment.CommentDao;
+import ru.otus.spring.petrova.repository.CommentRepository;
 import ru.otus.spring.petrova.domain.Book;
 import ru.otus.spring.petrova.domain.Comment;
 import ru.otus.spring.petrova.exception.DataNotFound;
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
 
-  private final CommentDao commentDao;
+  private final CommentRepository commentRepository;
   private final BookService bookService;
 
   @Transactional
-  public void createComment(long bookId, String name) throws DataNotFound {
+  public void createComment(long bookId, String comment) throws DataNotFound {
     Book book = bookService.getBook(bookId);
-    commentDao.create(new Comment(book, name));
+    commentRepository.save(new Comment(book, comment));
   }
 
   @Transactional(readOnly = true)

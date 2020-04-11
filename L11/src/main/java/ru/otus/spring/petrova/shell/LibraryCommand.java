@@ -51,17 +51,17 @@ public class LibraryCommand {
   }
 
   @ShellMethod(value = "Update book", key = {"bu", "bupdate"})
-  public String update(@ShellOption long bookId, @ShellOption String bookName) {
+  public String updateBook(@ShellOption long bookId, @ShellOption String bookName) {
     try {
       bookService.updateBook(bookId, bookName);
-    } catch (DataNotFound dataNotFound) {
-      return String.format("book with id %s not found", bookId);
+    } catch (DataNotFound | AlreadyExist e) {
+      return e.toString();
     }
     return "book updated";
   }
 
   @ShellMethod(value = "Delete book", key = {"bd", "bdelete"})
-  public String delete(@ShellOption long bookId) {
+  public String deleteBook(@ShellOption long bookId) {
     try {
       bookService.deleteBook(bookId);
     } catch (DataNotFound dataNotFound) {
@@ -71,7 +71,7 @@ public class LibraryCommand {
   }
 
   @ShellMethod(value = "Get book", key = {"bg", "bget"})
-  public String get(@ShellOption long bookId) {
+  public String getBook(@ShellOption long bookId) {
     try {
       return bookService.getBookInfo(bookId);
     } catch (DataNotFound dataNotFound) {
@@ -89,7 +89,7 @@ public class LibraryCommand {
     return "comment added";
   }
 
-  @ShellMethod(value = "Add comment", key = {"cg", "cget"})
+  @ShellMethod(value = "Get comment", key = {"cg", "cget"})
   public String getAllBookComments(@ShellOption long bookId) {
     try {
       return commentService.getComments(bookId).toString();
