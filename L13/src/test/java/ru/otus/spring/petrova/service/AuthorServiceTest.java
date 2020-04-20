@@ -4,33 +4,37 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.spring.petrova.domain.Author;
 import ru.otus.spring.petrova.exception.AlreadyExist;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataMongoTest
 @DisplayName("Сервис для работы с авторами ")
 @Import({AuthorService.class})
 public class AuthorServiceTest {
 
   @Autowired
-  private AuthorService authorService;
+  private MongoTemplate mongoTemplate;
 
   @Autowired
-  private TestEntityManager em;
+  private AuthorService authorService;
 
   @Test
   @DisplayName("сохряняет автора ")
   public void saveAuthor() throws AlreadyExist {
     String name = "TestAuthor";
-    authorService.createAuthor( name);
-    Author savedAuthor = em.find(Author.class, 2L);
-    assertThat(savedAuthor)
+    authorService.createAuthor(name);
+    List<Author> authors = mongoTemplate.findAll(Author.class);
+    assertThat(authors)
         .isNotNull()
+        .hasSize(1)
+        .element(0)
         .hasFieldOrPropertyWithValue("name", name);
   }
 

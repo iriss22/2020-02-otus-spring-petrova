@@ -1,8 +1,11 @@
 package ru.otus.spring.petrova.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.otus.spring.petrova.domain.Book;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
+import java.util.Optional;
 
+public interface BookRepository extends MongoRepository<Book, String> {
+
+  Optional<Book> findByName(String name);
 }

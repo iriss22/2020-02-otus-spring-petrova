@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public abstract class DataNotFound extends Exception {
   String name;
-  long id;
+  String id;
 
-  public DataNotFound(long id, Exception e) {
+  public DataNotFound(String id, Exception e) {
     super(e);
     this.id = id;
   }
 
-  public DataNotFound(String name, long id) {
+  public DataNotFound(String name, String id) {
     this.id = id;
     this.name = name;
   }

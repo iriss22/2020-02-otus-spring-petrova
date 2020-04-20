@@ -8,7 +8,6 @@ import ru.otus.spring.petrova.exception.AlreadyExist;
 import ru.otus.spring.petrova.exception.DataNotFound;
 import ru.otus.spring.petrova.service.AuthorService;
 import ru.otus.spring.petrova.service.BookService;
-import ru.otus.spring.petrova.service.CommentService;
 import ru.otus.spring.petrova.service.GenreService;
 
 @ShellComponent
@@ -18,40 +17,42 @@ public class LibraryCommand {
   private final BookService bookService;
   private final AuthorService authorService;
   private final GenreService genreService;
-  private final CommentService commentService;
 
   @ShellMethod(value = "Add book", key = {"ba", "badd"})
-  public String addBook(@ShellOption String name, @ShellOption long authorId, @ShellOption long genreId) {
+  public String addBook(@ShellOption String name, @ShellOption String authorId, @ShellOption String genreId) {
+    String id;
     try {
-      bookService.addBook(name, authorId, genreId);
+      id = bookService.addBook(name, authorId, genreId);
     } catch (DataNotFound | AlreadyExist error) {
       return error.toString();
     }
-    return "book added";
+    return String.format("book %s added", id);
   }
 
   @ShellMethod(value = "Add author", key = {"aa", "aadd"})
   public String addAuthor(@ShellOption String name) {
+    String id;
     try {
-      authorService.createAuthor(name);
+      id = authorService.createAuthor(name);
     } catch (AlreadyExist alreadyExist) {
       return alreadyExist.toString();
     }
-    return "author added";
+    return String.format("author %s added", id);
   }
 
   @ShellMethod(value = "Add genre", key = {"ga", "gadd"})
   public String addGenre(@ShellOption String name) {
+    String id;
     try {
-      genreService.createGenre(name);
+      id = genreService.createGenre(name);
     } catch (AlreadyExist alreadyExist) {
       return alreadyExist.toString();
     }
-    return "genre added";
+    return String.format("genre %s added", id);
   }
 
   @ShellMethod(value = "Update book", key = {"bu", "bupdate"})
-  public String updateBook(@ShellOption long bookId, @ShellOption String bookName) {
+  public String updateBook(@ShellOption String bookId, @ShellOption String bookName) {
     try {
       bookService.updateBook(bookId, bookName);
     } catch (DataNotFound | AlreadyExist e) {
@@ -61,7 +62,7 @@ public class LibraryCommand {
   }
 
   @ShellMethod(value = "Delete book", key = {"bd", "bdelete"})
-  public String deleteBook(@ShellOption long bookId) {
+  public String deleteBook(@ShellOption String bookId) {
     try {
       bookService.deleteBook(bookId);
     } catch (DataNotFound dataNotFound) {
@@ -71,7 +72,7 @@ public class LibraryCommand {
   }
 
   @ShellMethod(value = "Get book", key = {"bg", "bget"})
-  public String getBook(@ShellOption long bookId) {
+  public String getBook(@ShellOption String bookId) {
     try {
       return bookService.getBookInfo(bookId);
     } catch (DataNotFound dataNotFound) {
@@ -80,9 +81,9 @@ public class LibraryCommand {
   }
 
   @ShellMethod(value = "Add comment", key = {"ca", "cadd"})
-  public String addComment(@ShellOption long bookId, @ShellOption String text) {
+  public String addComment(@ShellOption String bookId, @ShellOption String text) {
     try {
-      commentService.createComment(bookId, text);
+      bookService.addComment(bookId, text);
     } catch (DataNotFound dataNotFound) {
       return dataNotFound.toString();
     }
@@ -90,9 +91,9 @@ public class LibraryCommand {
   }
 
   @ShellMethod(value = "Get comment", key = {"cg", "cget"})
-  public String getAllBookComments(@ShellOption long bookId) {
+  public String getAllBookComments(@ShellOption String bookId) {
     try {
-      return commentService.getComments(bookId).toString();
+      return bookService.getComments(bookId).toString();
     } catch (DataNotFound dataNotFound) {
       return dataNotFound.toString();
     }

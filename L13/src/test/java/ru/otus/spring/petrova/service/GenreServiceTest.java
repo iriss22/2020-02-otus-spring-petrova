@@ -4,33 +4,37 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.spring.petrova.domain.Genre;
 import ru.otus.spring.petrova.exception.AlreadyExist;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@DisplayName("Сервис для работы с жанрами ")
+@DataMongoTest
 @Import({GenreService.class})
+@DisplayName("Сервис для работы с жанрами ")
 public class GenreServiceTest {
 
   @Autowired
-  private GenreService genreService;
+  private MongoTemplate mongoTemplate;
 
   @Autowired
-  private TestEntityManager em;
+  private GenreService genreService;
 
   @Test
   @DisplayName("сохряняет жанр ")
   public void saveGenre() throws AlreadyExist {
     String name = "TestGenre";
     genreService.createGenre( name);
-    Genre savedGenre = em.find(Genre.class, 2L);
+    List<Genre> savedGenre = mongoTemplate.findAll(Genre.class);
     assertThat(savedGenre)
         .isNotNull()
+        .hasSize(1)
+        .element(0)
         .hasFieldOrPropertyWithValue("name", name);
   }
 
