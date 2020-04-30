@@ -1,14 +1,17 @@
 package ru.otus.spring.petrova.exception;
 
-public class AlreadyExist extends Exception {
+import lombok.Data;
+
+@Data
+public class AlreadyExistException extends RuntimeException {
 
   String name;
 
-  public AlreadyExist(Exception e) {
+  public AlreadyExistException(Exception e) {
     super(e);
   }
 
-  public AlreadyExist(String name, Exception e) {
+  public AlreadyExistException(String name, Exception e) {
     this.name = name;
   }
 

@@ -42,6 +42,10 @@ public class Book {
   @JoinColumn(name = "book_id")
   private List<Comment> comments;
 
+  public Book(Long id) {
+    this.id = id;
+  }
+
   public Book(String name, Author author, Genre genre) {
     this.name = name;
     this.author = author;

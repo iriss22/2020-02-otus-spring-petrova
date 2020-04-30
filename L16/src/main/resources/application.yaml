@@ -1,18 +1,12 @@
 spring:
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://localhost:5432/postgres"
-    username: "postgres"
-    password: "mysecretpassword"
     initialization-mode: always
 
   jpa:
     generate-ddl: false
+    #generate-ddl: true
     hibernate:
       ddl-auto: none
+      #ddl-auto: create-drop
 
-#    show-sql: true
-
-logging:
-  level:
-    ROOT: OFF
+    show-sql: true

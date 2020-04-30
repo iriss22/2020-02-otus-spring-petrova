@@ -1,6 +1,5 @@
 package ru.otus.spring.petrova.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.petrova.domain.Comment;
-import ru.otus.spring.petrova.exception.DataNotFound;
+import ru.otus.spring.petrova.dto.CommentDto;
+import ru.otus.spring.petrova.exception.DataNotFoundException;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @DisplayName("Сервис для работы с комментариями к книгам ")
-@Import({BookService.class, CommentService.class})
+@Import({CommentService.class})
 public class CommentServiceTest {
 
   @Autowired
@@ -29,7 +29,7 @@ public class CommentServiceTest {
 
   @Test
   @DisplayName("может сохранить один и тот же комментарий дважды ")
-  public void saveCommentTwice() throws DataNotFound, InterruptedException {
+  public void saveCommentTwice() {
     String comment = "It was great!";
     commentService.createComment(BOOK_ID, comment);
     Comment savedComment = em.find(Comment.class, 2L);
@@ -41,8 +41,8 @@ public class CommentServiceTest {
 
   @Test
   @DisplayName("должен возвращать список комментариев для книги ")
-  public void getCommentsTest() throws DataNotFound {
-    List<String> comments = commentService.getComments(BOOK_ID);
+  public void getCommentsTest() throws DataNotFoundException {
+    List<CommentDto> comments = commentService.getComments(BOOK_ID);
     assertThat(comments)
         .isNotNull()
         .hasSize(1);
@@ -51,6 +51,7 @@ public class CommentServiceTest {
   @Test
   @DisplayName("должен возвращать ошибку при запросе списка комментариев, если книги не существует ")
   public void getCommentsBadBookTest() {
-    Assertions.assertThrows(DataNotFound.class, () -> commentService.getComments(999));
+    List<CommentDto> comments = commentService.getComments(999);
+    assertThat(comments).isEmpty();
   }
 }

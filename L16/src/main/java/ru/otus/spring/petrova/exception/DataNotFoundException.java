@@ -3,16 +3,16 @@ package ru.otus.spring.petrova.exception;
 import lombok.Data;
 
 @Data
-public abstract class DataNotFound extends Exception {
+public abstract class DataNotFoundException extends RuntimeException {
   String name;
   long id;
 
-  public DataNotFound(long id, Exception e) {
+  public DataNotFoundException(long id, Exception e) {
     super(e);
     this.id = id;
   }
 
-  public DataNotFound(String name, long id) {
+  public DataNotFoundException(String name, long id) {
     this.id = id;
     this.name = name;
   }

@@ -3,9 +3,13 @@ package ru.otus.spring.petrova.service;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.petrova.repository.AuthorRepository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.petrova.domain.Author;
-import ru.otus.spring.petrova.exception.AlreadyExist;
+import ru.otus.spring.petrova.exception.AlreadyExistException;
+import ru.otus.spring.petrova.repository.AuthorRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,14 +17,28 @@ public class AuthorService {
 
   private final AuthorRepository authorRepository;
 
-  public void createAuthor(String name) throws AlreadyExist {
+  @Transactional
+  public Author createAuthor(String name) throws AlreadyExistException {
     try {
-      authorRepository.save(new Author(name));
+      return authorRepository.save(new Author(name));
     } catch (RuntimeException e) {
       if (e.getCause() instanceof ConstraintViolationException) {
-        throw new AlreadyExist("author", e);
+        throw new AlreadyExistException("author", e);
       }
       throw e;
     }
+  }
+
+  @Transactional
+  public Author getOrCreate(String name) throws AlreadyExistException {
+    Optional<Author> author = authorRepository.findByName(name);
+    if (!author.isPresent()) {
+      return createAuthor(name);
+    }
+    return author.get();
+  }
+
+  public List<Author> getAll() {
+    return authorRepository.findAll();
   }
 }
