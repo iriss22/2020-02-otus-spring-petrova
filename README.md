@@ -11,6 +11,8 @@
 * [L9](L9/README.md) - Библиотека. Хранение данных в БД PostgreSQL, доступ с использованием Hibernate
 * [L11](L11/README.md) - Библиотека. Хранение данных в БД PostgreSQL, доступ с использованием Spring Data JPA
 * [L13](L13/README.md) - Библиотека. Хранение данных в БД MongoDB, доступ с использованием Spring Data MongoDB
+* [L16](L16/README.md) - Библиотека. Используется Spring MVC. Хранение данных в БД H2, доступ с использованием Spring Data JPA.
+* [L17](L17/README.md) - Библиотека. Single page application. Хранение данных в БД H2, доступ с использованием Spring Data JPA.
 * [L16](L16/README.md) - Библиотека. Используется Spring MVC. Хранение данных в БД PostgreSQL, доступ с использованием Spring Data JPA.
 * [L20](L20/README.md) - Библиотека. Reactive spring boot application, используемая БД:  MongoDB
 * [L22](L22/README.md) - Библиотека. Используется Spring MVC. Хранение данных в БД PostgreSQL, доступ с использованием Spring Data JPA. Аутентификация с использованием Spring Security.
