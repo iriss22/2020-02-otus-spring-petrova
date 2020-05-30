@@ -26,3 +26,11 @@ CREATE TABLE comment (
     text VARCHAR(500) NOT NULL,
     book_id BIGINT NOT NULL REFERENCES book(id)
 );
+
+CREATE TABLE user (
+  id BIGSERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  enabled BOOLEAN NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (id)
+);

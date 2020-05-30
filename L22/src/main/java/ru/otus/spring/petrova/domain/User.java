@@ -11,20 +11,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Table(name = "genre")
-public class Genre {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "user")
+public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
-  @Column(name = "name", nullable = false, unique = true)
-  private String name;
+  @Column(nullable = false, unique = true)
+  private String username;
 
-  public Genre(String name) {
-    this.name = name;
-  }
+  @Column(nullable = false)
+  private String password;
+
+  @Column
+  private Boolean enabled;
 }
