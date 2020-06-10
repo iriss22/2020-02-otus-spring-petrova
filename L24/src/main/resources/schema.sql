@@ -34,3 +34,11 @@ CREATE TABLE user (
   enabled BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE authority (
+  id BIGSERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL,
+  authority VARCHAR(50) NOT NULL,
+  CONSTRAINT fk_authorities_users FOREIGN KEY(username) REFERENCES user(username)
+);
+CREATE UNIQUE index ix_auth_username ON authority (username, authority);

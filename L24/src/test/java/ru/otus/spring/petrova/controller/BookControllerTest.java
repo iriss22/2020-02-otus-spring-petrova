@@ -115,6 +115,10 @@ public class BookControllerTest {
 
   @Test
   @DisplayName("должен уметь удалять книгу и возвращать нужный шаблон ")
+  @WithMockUser(
+      username = "test",
+      authorities = {"ROLE_ADMIN"}
+  )
   public void deleteTest() throws Exception {
     given(bookService.getAllBooks()).willReturn(List.of(BOOK));
     mockMvc.perform(get(String.format("/books/delete/%s", BOOK.getId())))
@@ -125,6 +129,10 @@ public class BookControllerTest {
 
   @Test
   @DisplayName("должен уметь возвращать ошибку, если книга не найдена ")
+  @WithMockUser(
+      username = "test",
+      authorities = {"ROLE_ADMIN"}
+  )
   public void deleteDataNotFoundTest() throws Exception {
     doThrow(new BookNotFoundException(BOOK.getId())).when(bookService).deleteBook(BOOK.getId());
     mockMvc.perform(get(String.format("/books/delete/%s", BOOK.getId())))
@@ -133,6 +141,10 @@ public class BookControllerTest {
 
   @Test
   @DisplayName("должен уметь возвращать пустую заглушку книги и нужный шаблон ")
+  @WithMockUser(
+      username = "test",
+      authorities = {"ROLE_ADMIN"}
+  )
   public void getEmptyTest() throws Exception {
     mockMvc.perform(get("/books/add"))
         .andExpect(status().isOk())
@@ -142,20 +154,16 @@ public class BookControllerTest {
 
   @Test
   @DisplayName("должен уметь возвращать книгу и нужный шаблон ")
+  @WithMockUser(
+      username = "test",
+      authorities = {"ROLE_ADMIN"}
+  )
   public void getTest() throws Exception {
     given(bookService.getBook(anyLong())).willReturn(BOOK);
     mockMvc.perform(get(String.format("/books/%s", BOOK.getId())))
         .andExpect(status().isOk())
         .andExpect(view().name("edit_book"))
         .andExpect(model().attribute("book", BOOK));
-  }
-
-  @Test
-  @DisplayName("должен уметь возвращать книгу и нужный шаблон ")
-  public void getDataNotFoundTest() throws Exception {
-    given(bookService.getBook(anyLong())).willThrow(new BookNotFoundException(BOOK.getId()));
-    mockMvc.perform(get(String.format("/books/%s", BOOK.getId())))
-        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -166,5 +174,17 @@ public class BookControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("list_book"))
         .andExpect(model().attribute("books", List.of(BOOK)));
+  }
+
+  @Test
+  @DisplayName("должен уметь возвращать книгу и нужный шаблон ")
+  @WithMockUser(
+      username = "test",
+      authorities = {"ROLE_ADMIN"}
+  )
+  public void getDataNotFoundTest() throws Exception {
+    given(bookService.getBook(anyLong())).willThrow(new BookNotFoundException(BOOK.getId()));
+    mockMvc.perform(get(String.format("/books/%s", BOOK.getId())))
+        .andExpect(status().isNotFound());
   }
 }
