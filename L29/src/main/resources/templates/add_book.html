@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+
+<form id="add-form" th:action="@{/books}" th:object="${book}" action="edit_book.html">
+    <h1>Book Info:</h1>
+
+    <div class="row">
+        <label for="holder-input">Book name:</label>
+        <input id="holder-input" name="name" type="text" th:value="*{name}" value=""/>
+    </div>
+
+    <div class="row">
+        <label for="author-input">Author name:</label>
+        <input id="author-input" name="authorName" type="text" th:value="*{authorName}" value="Author"/>
+    </div>
+
+    <div class="row">
+        <label for="genre-input">Genre name:</label>
+        <input id="genre-input" name="genreName" type="text" th:value="*{genreName}" value="Genre"/>
+    </div>
+
+    <div class="row">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+
+<script>
+    (function ($) {
+        let bookEditForm = $('#add-form');
+        bookEditForm.submit(function () {
+            let book = $(this).serialize();
+            $.post({
+                url: '/rs/books/',
+                data: book
+            }).then(
+                function (value) {
+                    window.location.href = '/books';
+                    console.log(value);
+                },
+                function (xhr, error) {
+                    alert('Saving a book failed!');
+                    console.log(error.toUpperCase() + '. HTTP status: ' + xhr.status);
+                }
+            );
+        });
+    })(jQuery);
+</script>
+
+</body>
+</html>
