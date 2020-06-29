@@ -10,3 +10,20 @@ spring:
       #ddl-auto: create-drop
 
     show-sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, metrics, logfile"
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  pattern:
+    rolling-file-name: "${LOG_FILE}.%d{yyyy-MM-dd_HH-mm}.%i.gz"
+  file:
+    name: "logs/service.log"
+    max-size: 1024B
+    max-history: 3
