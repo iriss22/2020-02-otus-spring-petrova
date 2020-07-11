@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    initialization-mode: always
+    driver-class-name: ${DB_DRIVER}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      #ddl-auto: create-drop
+
+    show-sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, metrics, logfile"
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  pattern:
+    rolling-file-name: "${LOG_FILE}.%d{yyyy-MM-dd_HH-mm}.%i.gz"
+  file:
+    name: "logs/service.log"
+    max-size: 1024B
+    max-history: 3
