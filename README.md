@@ -17,4 +17,6 @@
 * [L20](L20/README.md) - Библиотека. Reactive spring boot application, используемая БД:  MongoDB
 * [L22](L22/README.md) - Библиотека. Используется Spring MVC. Хранение данных в БД PostgreSQL, доступ с использованием Spring Data JPA. Аутентификация с использованием Spring Security.
 * [L24](L24/README.md) - Библиотека. Используется Spring MVC. Хранение данных в БД PostgreSQL, доступ с использованием Spring Data JPA. Аутентификация и авторизация с использованием Spring Security.
-* [L31](L31/README.md) - Библиотека. Добавлен докер
+* [L28](L28/README.md) - Spring integration
+* [L29](L29/README.md) - Библиотека. Хранение данных в БД H2, доступ с использованием Spring Data JPA. Использую Spring Data REST Repository. Подключена Spring Boot Actuator и HATEOAS
+* [L31](L31/README.md) - Библиотека. Обернула в докер
