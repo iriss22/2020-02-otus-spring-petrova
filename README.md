@@ -20,3 +20,4 @@
 * [L28](L28/README.md) - Spring integration
 * [L29](L29/README.md) - Библиотека. Хранение данных в БД H2, доступ с использованием Spring Data JPA. Использую Spring Data REST Repository. Подключена Spring Boot Actuator и HATEOAS
 * [L31](L31/README.md) - Библиотека. Обернула в докер
+* [L34](L34/README.md) - Простое приложение в завернутым в hystrix внешним вызовом.
